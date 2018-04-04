@@ -1,0 +1,304 @@
+---
+title: "R Introductionfor CSHS-hydRology package"
+author: "R. Chlumsky"
+date: "March 2018"
+output: html_document
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introdutory R Tutorial for hydRology Package
+
+This introductory R tutorial covers the following topics:
+
+* Basic R Syntax
+* Data types in R
+* Help in R
+* Installing and Exploring Packages
+* Reading in basic data files
+* Creating plots
+* Basic programming structures
+* Building functions
+* Exploring the CSHS-hydRology package
+
+Please work your way through the tutorial as a way of introducing the basics of R, and demonstrating how to download and begin using the CSHS-hydRology package.
+
+## Basic R Syntax
+
+#### Basic Arithmetic
+
+```{r}
+1+1
+2*2
+4/3
+5 %% 2 # modulus operator, determines the remainder from 5/2
+```
+
+R is not strict in its definition of data types, i.e. you can declare and re-assign the data types to variables at your whim. You can also use the arrow operator (--> <--) in either direction to point from the value being stored to the storage variable.
+
+```{r}
+a <- 1
+a
+5 -> a
+a
+b <- a+1
+b
+b <- "hello, world"
+b
+
+# convert between data types
+as.numeric("501") +1 
+paste0(as.character(a),"_cool_string")
+round(5.6) # round to integer
+floor(5.6) # round down to integer
+# as.numeric(b) # will produce an error
+# as.character(a) + "_" # will produce an error
+
+# write a statement with any format
+sprintf("I have $%.2f in my pocket, that is %s",a,"cool")
+```
+
+#### Vectors and Matrices
+```{r}
+a <- c(1,2,3,4,5)
+a
+b <- a/2
+b
+b <- c(a,rep(1,5))
+b
+b <- matrix(NA,nrow=4,ncol=4)
+b[,2] <- rep(2,4)
+b[3,] <- seq(1,4)
+b
+seq1 <- seq(1:6)
+a <- matrix(seq1, 2)
+a
+```
+
+#### Subsetting Vectors
+```{r}
+a <- seq(1,30,by=2)
+a
+# subset by location
+a[1:3]
+a[-1]
+# subset by value
+a>5
+a[a>5]
+a[a %% 2 > 0]
+```
+
+## Running Commands
+
+```{r}
+a <- rnorm(100,mean=0,sd=2)
+mean(a)
+var(a)
+```
+
+### Getting Help on Commands
+
+```{r, eval=FALSE}
+# get help on command
+?var
+
+# search for functions by name or keyword
+??variance
+
+# see R code directly
+var
+sqrt
+```
+
+For more resources, check out the CRAN website (<https://cran.r-project.org/>) for information, documentation, etc. StackOverflow and similar forums are also extremely helpful for R!
+
+## Explore More Packages!
+
+R has **thousands** of packages to offer, which is one of the main advantages of getting to know R. This section will show you how to easily install and get to know new packages.
+
+### Installing and exploring a new package
+
+Installing new packages in your R environment is made super easy, and can be done from the GUI or using the $install.packages$ function. Packages that are on CRAN can be installed directly using this function, assuming you have an internet connection. For the purpose of the tutorial, we will install the ggplot2 package from CRAN and use the 'diamonds' sample data set available within the package.
+
+```{r, eval=FALSE}
+# install ggplot2 with dependencies from CRAN (internet connection required)
+install.packages("ggplot2")
+
+# load the library into your R session
+library(ggplot2)
+
+# explore the package contents
+ls("package:ggplot2")
+```
+
+## Some Data on Handling Data
+
+```{r}
+library(ggplot2)
+data(diamonds)    # load data frame from ggplot2 package
+head(diamonds)    # preview data
+class(diamonds)   # class or type of an object
+names(diamonds)   # names inside the object
+str(diamonds)     # view structure of diamonds
+summary(diamonds) # summarize dataset
+nrow(diamonds)    # number of rows
+ncol(diamonds)    # number of columns
+
+# subset particular data from data frame
+head(diamonds$carat)
+mean(diamonds$price)
+mydb <- diamonds[diamonds$price > 3000,]
+```
+
+## Create a basic plot
+
+Let's sample our diamonds dataset, and create a few basic plots with it.
+
+```{r, echo=TRUE}
+mydb <- diamonds[(diamonds$price > 10000) & (diamonds$carat > 1),]
+
+# basic price plot
+plot(mydb$price)
+
+# add labels and a title
+plot(mydb$price,xlab='Index',ylab='Price (USD)',main='diamonds datatset prices > $10 000 USD')
+
+# create a price vs carat size plot
+plot(mydb$carat,mydb$price,xlab='Carat size',ylab='Price (USD)')
+```
+
+Feel free to check out the plotting options, try searching help on the plot function to bedazzle your plot. 
+
+
+Want to output your plot to an image file? Try this out.
+
+```{r, eval=FALSE}
+png(filename = "my precipitation plot.png") # creates an empty png file
+# everything you plot here goes into your file
+plot(mydb$price,xlab='Index',ylab='Price (USD)',main='diamonds datatset prices > $10 000 USD')
+abline(h=5000,lty=2,col='red')
+text(x=5000,y=6500,labels=c("Mr. Smith\'s Budget"),col='red')
+arrows(x0=5000,x1=5000,y0=6000,y1=5000,col='red',length=0.1)
+dev.off() # release your hold on the plot
+```
+
+## Basic Programming Stuff
+
+The basics you tend to see in every programming tutorial.
+
+### If statement
+
+```{r}
+5 -> a
+if (a < 2) {
+  print("a is less than 2!") 
+} else {
+  print("a is not less than 2!")
+}
+
+b <- c(1,2,4,8)
+if (4 %in% b) {
+  print(sprintf("4 is contained in %s, which is c(%s)","b",paste(b,collapse = ", ")))
+}
+```
+
+### Loops
+
+```{r}
+# for loops
+for (i in 1:3) {
+  print(i)
+}
+
+for (ss in seq(1,3,1)) {
+  print(ss/2)
+}
+
+# while loop
+i = 1
+while(i < 4) {
+  print(sprintf("%i is still less than 4",i))
+  i = i +1
+}
+
+# repeat loop
+i = 1
+repeat{
+  print(i)
+  if (i >= 3) {
+    break
+  }
+  i = i + 1
+}
+```
+
+A quick note on loops: loops in R are generally considered to be slow; not in a way that is necessarily noticeable for most tasks, but there are faster and cleaner ways to run most things in R. For the hardcore coders, there is a general concensus that if you used a loop in R, then you have failed. For a lot of tasks this is not true (I still use loops for a lot of things) but it is good to get to know the quirks in R and avoid loops where possible. 
+
+For example, consider the following time tests.
+
+```{r, results='hold'}
+dd <- as.numeric(seq(1,1e6)) # create a vector of 1 to 1million
+ss <- 0 # sum to calculate
+
+# get the sum of the vector
+Sys.sleep(1) # pause for 1 second to let CPU settle
+system.time(for (i in 1:length(dd)) {ss <- ss + dd[i]})
+Sys.sleep(1)
+system.time(sum(dd))
+cat("\n")
+
+# take the sqrt of each element in the vector
+Sys.sleep(1) # pause for 1 second to let CPU settle
+system.time(for (i in 1:length(dd)) {dd[i] <- dd[i]^0.5})
+dd <- as.numeric(seq(1,1e6)) # create a vector of 1 to 1million
+Sys.sleep(1)
+system.time(dd <- sqrt(dd))
+cat("\n")
+
+# square each element in the vector
+dd <- as.numeric(seq(1,1e6))
+Sys.sleep(1) # pause for 1 second to let CPU settle
+system.time(for (i in 1:length(dd)) {dd[i] <- dd[i]^2})
+dd <- as.numeric(seq(1,1e6))
+Sys.sleep(1)
+system.time(dd <- dd^2)
+```
+
+As you can see, using the built-in R functions is much faster than using a loop, especially when you have a lot of data to crunch (this difference becomes more and more noticeable the more data you have). The reason for this is that many of the built-in R functions use C in the background, which is faster than using R itself (if that makes sense). 
+
+For example, try to look at the code for the $sqrt$ and $sum$ functions. It will show as "Primitive" functions, meaning it is internally implemented in non-R code, and runs faster than loops.
+
+This may be more information than you need at this point, but the takeway is...avoid using loops where possible!
+
+### Creating your own functions
+
+```{r}
+# basic function syntax
+squareit <- function(a) {
+  a^2
+}
+squareit(3)
+
+# optional parameter
+exponentit <- function(a,b=2) {
+  a^b
+}
+exponentit(3)
+exponentit(3,3)
+```
+
+## CSHS-hydRology package
+
+Let's try out some of the functions in the CSHS-hydRology package. We've already seen how to install packages from CRAN. Here we will install the latest version of the CSHS-hydRology package directly from Github using the $devtools$ package.
+
+```{r, eval=FALSE, include=TRUE}
+install.packages("devtools") # installs from CRAN
+library(devtools) 
+install_github("CSHS-hydRology/CSHS-hydRology") # installs latest version from GitHub
+library(CSHS-hydRology)
+```
+
+
