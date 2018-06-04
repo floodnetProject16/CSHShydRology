@@ -301,4 +301,42 @@ install_github("CSHS-hydRology/CSHS-hydRology") # installs latest version from G
 library(CSHS-hydRology)
 ```
 
+Let's test out one of the functions which creates a basic hydrograph plot. Call up the function description with the $?CSHShydRoogy::hydrograph.plot$ command. Let's run a similar example to the one provided in the function description with random data.
 
+```{r}
+library(CSHShydRology)
+dd <- seq.Date(as.Date("2000-10-01"),as.Date("2010-09-30"),by=1)
+# set a random seed for replicability
+set.seed(12345)
+x <- abs(rnorm(length(dd)))
+set.seed(34567)
+y <- abs(rnorm(length(dd)))*x
+df <- data.frame("Date"=dd,x,y)
+
+# basic hydrograph plot
+hydrograph.plot(flows=df) 
+```
+
+This creates a basic hydrograph plot without the bells and whistles, using a data frame with the Date attribute (formatted as a Date). Let's add some precipitation data and adjust the plot limits.
+
+```{r}
+library(CSHShydRology)
+dd <- seq.Date(as.Date("2000-10-01"),as.Date("2010-09-30"),by=1)
+# set a random seed for replicability
+set.seed(12345)
+x <- abs(rnorm(length(dd)))
+set.seed(34567)
+y <- abs(rnorm(length(dd)))*x
+df <- data.frame("Date"=dd,x,y)
+
+set.seed(67891)
+precip <- data.frame("Date"=dd,"precip"=abs(rnorm(length(dd)))*10)
+
+# hydrograph plot with precipitation
+hydrograph.plot(flows=df,precip=precip,range.mult.flow=2,range.mult.precip=2) 
+```
+
+Feel free to explore more options in the parameters. For example, see if you can create a hydrograph plot that:
+* creates a box around the legend
+* replaces the labels of the flows object with something else
+* colours the December 1 - March 31 period of every year

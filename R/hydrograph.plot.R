@@ -5,8 +5,6 @@
 #'
 #' @author Robert Chlumsky <rchlumsk@gmail.com>
 #' 
-#' # Details to be updated
-#' 
 #' This function creates a hydrograph plot using the supplied time series; any
 #' series not supplied will not be plotted. If the precip time series is
 #' supplied, the secondary y axis will be used to plot the precip time series.
@@ -52,26 +50,25 @@
 #' plot type is available, 'ggplot' is under construction.
 #'
 #' Note that a plot title is purposely omitted in order to allow the automatic
-#' generation of plot titles.
+#' generation of plot titles. 
 #'
-#' @param sim time series object of simulated flows
-#' @param obs time series object of observed flows
-#' @param inflow time series object of inflows to subbasin
-#' @param precip time series object of precipitation
+#' @param flows data frame of flows to plot
+#' @param precip data frame of precipitation values to plot
 #' @param prd period to use in plotting
 #' @param winter.shading optionally adds shading for winter months (default
-#' TRUE)
+#' FALSE)
 #' @param range.mult.flow range multiplier for max value in hydrograph
 #' @param range.mult.precip range multiplier for max value in precipitation plot (default 1.5)
+#' @param flow.labels string vector of labels for flow values
 #' @param ylabel text label for y-axis of the plot (default 'Flow [m3/s]')
+#' @param precip.label text label for precipitation y-axis (default 'Precipitation [mm]')
 #' @param leg.pos string specifying legend placement on plot
 #' @param leg.box boolean on whether to put legend in an opaque box
 #' @param zero.axis fixes the y axis to start exactly at zero (default TRUE)
 #' @param plot.mode plot mode as "base" or "ggplot"
 #' @return \item{TRUE}{return TRUE if the function is executed properly}
 #' @keywords plot hydrograph
-#' @examples
-#' 
+#' @examples 
 #' # example with randomly sampled data
 #' dd <- seq.Date(as.Date("2010-10-01"),as.Date("2013-09-30"),by=1)
 #' x <- abs(rnorm(length(dd)))
@@ -94,10 +91,9 @@
 #' hydrograph.plot(flows=df,precip=precip,range.mult.flow=1.7,range.mult.precip=2,leg.box=T)
 #'  
 #' @export hydrograph.plot
-hydrograph.plot <- function(flows=NULL,precip=NULL,prd=NULL,flow.labels=NULL,precip.label=NULL,
-                     winter.shading=T,range.mult.flow=NULL,range.mult.precip=1.5,
-                     ylabel="Flow [m3/s]",leg.pos=NULL,leg.box=NULL,zero.axis=T,
-                     plot.mode="base") {
+hydrograph.plot <- function(flows=NULL,precip=NULL,prd=NULL,winter.shading=F,range.mult.flow=NULL,range.mult.precip=1.5,
+  flow.labels=NULL,ylabel="Flow [m3/s]",precip.label="Precipitation [mm]",leg.pos=NULL,leg.box=NULL,zero.axis=T,
+  plot.mode="base") {
   
   # check plot mode
   if (plot.mode == "ggplot") {
@@ -150,17 +146,6 @@ hydrograph.plot <- function(flows=NULL,precip=NULL,prd=NULL,flow.labels=NULL,pre
     }
     if (ncol(precip) > 2) {
       stop("flows cannot have more than 1 data column (other than 'Date').")
-    }
-  }
-  
-  # check precip labels
-  if (!(is.null(precip))) {
-    if (!(is.null(precip.label))) {
-      if (length(precip.label) != 1)  {
-        stop("precip.label must be a single string value.")
-      }
-    } else {
-      precip.label <- colnames(precip)[2]
     }
   }
   
@@ -248,7 +233,7 @@ hydrograph.plot <- function(flows=NULL,precip=NULL,prd=NULL,flow.labels=NULL,pre
     y.hmin <- min(flows[,2:(ncol(flows))],na.rm=T)
   }
   
-  plot(flows$Date,flows[,2],xlab="Date",ylab="Flow [m3/s]",
+  plot(flows$Date,flows[,2],xlab="Date",ylab=ylabel,
        col='white',type='l',ylim=c(y.hmin,y.hmax), panel.first=grid())
   if (winter.shading) {
     # shaded winter months
@@ -293,7 +278,7 @@ hydrograph.plot <- function(flows=NULL,precip=NULL,prd=NULL,flow.labels=NULL,pre
          type='h',ylim=rev(c(0,max(precip[,2],na.rm=T)*range.mult.precip)),xaxt='n',yaxt='n',
          xlab="",ylab="")
     axis(4)
-    mtext("Precipitation [mm]",side=4,line=2.5)
+    mtext(sprintf("%s",precip.label),side=4,line=2.5)
     
     leg.items <- c(leg.items,precip.label)
     leg.cols <- c(leg.cols,precip.col)
