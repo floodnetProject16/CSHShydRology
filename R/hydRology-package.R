@@ -7,7 +7,7 @@
 #' }
 #' @author Kevin Shook
 #' @author Paul Whitfield
-#' @author Robery Chlumsky
+#' @author Robert Chlumsky
 #' @author Dan Moore
 #' 
 #' 
@@ -24,5 +24,6 @@
 #' @import (raster)
 #' @import (Kendall)
 #' @import (fields)
+#' @import (lubridate)
 
 

@@ -1,6 +1,6 @@
 #' Subset Date by String
 #'
-#' date.subset subsets a data frame with Date attribute using date string
+#' DateSubset subsets a data frame with Date attribute using date string
 #'
 #' @author Robert Chlumsky <rchlumsk@gmail.com>
 #' 
@@ -19,10 +19,10 @@
 #' y <- abs(rnorm(length(dd)))*2
 #' df <- data.frame("Date"=dd,x,y)
 #' prd <- "2011-10-01/2012-09-30"
-#' summary(date.subset(df,prd))
+#' summary(DateSubset(df,prd))
 #'
-#' @export date.subset
-date.subset <- function(df,prd) {
+#' @export DateSubset
+DateSubset <- function(df,prd) {
   ss <- unlist(strsplit(prd,split="/"))
   df <- df[df$Date >= as.Date(ss[1]) & df$Date <= as.Date(ss[2]),]
   return(df)

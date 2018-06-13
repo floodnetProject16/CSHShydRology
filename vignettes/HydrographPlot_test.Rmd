@@ -1,8 +1,8 @@
 ---
-title: "hydrograph_plot test"
+title: "HydrographPlot test"
 author: "K. Shook"
 contributor: "R. Chlumsky"
-date: "June 1, 2018"
+date: "June 13, 2018"
 output: html_document
 ---
 
@@ -10,7 +10,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## hydrograph_plot test
+## HydrographPlot test
 
 This is a general-purpose hydrograph plotting function, which is useful for a wide variety of tasks.
 Currently the function only uses base R plotting, but the addition of ggplot2 graphs is planned for the
@@ -28,8 +28,8 @@ Note that the value returned by the function, if successful is TRUE/
 library(CSHShydRology)
 data("W05AA008")
 daily_flows <- W05AA008[, c(3, 4)]
-result1 <- hydrograph.plot(flows = daily_flows, winter.shading = FALSE)
-result2 <- hydrograph.plot(flows = daily_flows, winter.shading = TRUE)
+result1 <- HydrographPlot(flows = daily_flows, winter.shading = FALSE)
+result2 <- HydrographPlot(flows = daily_flows, winter.shading = TRUE)
 ```
 
 The period of the plot can be restricted by setting the option prd, nwhich is a string like “2011-10-
@@ -37,7 +37,7 @@ The period of the plot can be restricted by setting the option prd, nwhich is a 
 
 ```{r}
 myprd <- "2000-01-01/2000-12-31"
-result3 <- hydrograph.plot(flows = daily_flows, winter.shading = TRUE,
+result3 <- HydrographPlot(flows = daily_flows, winter.shading = TRUE,
 prd = myprd)
 ```
 
@@ -47,7 +47,7 @@ You can also plot precipitation data. In this example fake precipitation data ar
 
 ```{r}
 precip <- data.frame("Date" = daily_flows$Date,"precip" = abs(rnorm(nrow(daily_flows)))*10)
-result4 <- hydrograph.plot(flows = daily_flows, precip = precip, winter.shading = TRUE,
+result4 <- HydrographPlot(flows = daily_flows, precip = precip, winter.shading = TRUE,
 prd = myprd)
 ```
 
@@ -56,7 +56,7 @@ if desired. The default is to multiply the precipitation range by 1.5 of the max
 the range can be multiplied by any positive value to prevent this.
 
 ```{r}
-result5 <- hydrograph.plot(flows = daily_flows, precip = precip, winter.shading = TRUE,
+result5 <- HydrographPlot(flows = daily_flows, precip = precip, winter.shading = TRUE,
 prd = myprd,range.mult.precip = 2,range.mult.flow = 1.8)
 ```
 
@@ -69,14 +69,14 @@ expression to get a superscripted 3.
 ```{r}
 ylab <- expression(paste("Discharge [m"^"3","/s]"))
 par(mgp=c(2.5,1,0)) # move axis labels closer to plot
-result6 <- hydrograph.plot(flows = daily_flows, precip = precip,
+result6 <- HydrographPlot(flows = daily_flows, precip = precip,
 prd = myprd, ylabel = ylab)
 ```
 
 The precipitation label can also be adjusted.
 ```{r}
 ylab.precip <- "Rainfall [mm]"
-result7 <- hydrograph.plot(flows = daily_flows, precip = precip,
+result7 <- HydrographPlot(flows = daily_flows, precip = precip,
 prd = myprd, precip.label = ylab.precip)
 ```
 
@@ -91,10 +91,10 @@ Many other formatting options exist, such as:
 For example:
 
 ```{r}
-result8 <- hydrograph.plot(flows = daily_flows, precip = precip,
+result8 <- HydrographPlot(flows = daily_flows, precip = precip,
 prd = myprd, leg.pos='right') # change legend to the right side
-result9 <- hydrograph.plot(flows = daily_flows, precip = precip,
+result9 <- HydrographPlot(flows = daily_flows, precip = precip,
 prd = myprd, leg.box=TRUE) # add legend fill and outline
-result10 <- hydrograph.plot(flows = daily_flows, precip = precip,
+result10 <- HydrographPlot(flows = daily_flows, precip = precip,
 prd = myprd, zero.axis=F) # default plot outside of function with buffer around axis
 ```
